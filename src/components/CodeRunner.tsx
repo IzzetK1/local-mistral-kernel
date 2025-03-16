@@ -9,11 +9,8 @@ interface CodeRunnerProps {
   onOutputChange: (output: string) => void;
 }
 
-const CodeRunner: React.FC<CodeRunnerProps> = ({
-  code,
-  language,
-  onOutputChange,
-}) => {
+// Changed from a React component to a custom hook
+export const useCodeRunner = ({ code, language, onOutputChange }: CodeRunnerProps) => {
   const [isRunning, setIsRunning] = useState(false);
   const { toast } = useToast();
 
@@ -47,5 +44,3 @@ const CodeRunner: React.FC<CodeRunnerProps> = ({
 
   return { runCode, isRunning };
 };
-
-export default CodeRunner;

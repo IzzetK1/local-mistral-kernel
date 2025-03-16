@@ -1,11 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
-import { Resizable, ResizeHandle } from '@/components/ui/resizable';
+import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from '@/components/ui/resizable';
 import { useToast } from '@/components/ui/use-toast';
 import Header from '@/components/Header';
 import CodeEditor from '@/components/Editor';
 import Terminal from '@/components/Terminal';
-import CodeRunner from '@/components/CodeRunner';
+import { useCodeRunner } from '@/components/CodeRunner';
 import { getOllamaModels } from '@/services/ollamaService';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -38,6 +38,13 @@ const Index = () => {
   const [availableModels, setAvailableModels] = useState<string[]>([]);
   const [connected, setConnected] = useState(false);
   const { toast } = useToast();
+  
+  // Use the custom hook properly
+  const { runCode, isRunning } = useCodeRunner({
+    code,
+    language,
+    onOutputChange: setOutput,
+  });
   
   // Initial load effect
   useEffect(() => {
@@ -80,13 +87,6 @@ const Index = () => {
       setCode(DEFAULT_JAVASCRIPT_CODE);
     }
   };
-  
-  // Code runner integration
-  const { runCode, isRunning } = CodeRunner({
-    code,
-    language,
-    onOutputChange: setOutput,
-  });
 
   return (
     <div className="flex flex-col h-screen w-full bg-background overflow-hidden animate-fade-in">
@@ -140,25 +140,25 @@ const Index = () => {
           </TabsContent>
           
           <TabsContent value="split" className="flex-1 h-[calc(100%-3rem)]">
-            <Resizable
+            <ResizablePanelGroup
               direction="horizontal"
               className="h-full"
             >
-              <div className="h-full">
+              <ResizablePanel className="h-full">
                 <CodeEditor 
                   code={code} 
                   onChange={setCode} 
                   language={language} 
                 />
-              </div>
-              <ResizeHandle />
-              <div className="h-full">
+              </ResizablePanel>
+              <ResizableHandle />
+              <ResizablePanel className="h-full">
                 <Terminal 
                   output={output} 
                   isLoading={isRunning} 
                 />
-              </div>
-            </Resizable>
+              </ResizablePanel>
+            </ResizablePanelGroup>
           </TabsContent>
         </Tabs>
       </div>
