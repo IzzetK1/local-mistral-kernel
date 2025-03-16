@@ -4,6 +4,7 @@ import { useToast } from '@/components/ui/use-toast';
 import Header from '@/components/Header';
 import CodeEditor from '@/components/Editor';
 import Terminal from '@/components/Terminal';
+import Chat from '@/components/Chat';
 import { useCodeRunner } from '@/components/CodeRunner';
 import { getOllamaModels } from '@/services/ollamaService';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -38,14 +39,12 @@ const Index = () => {
   const [connected, setConnected] = useState(false);
   const { toast } = useToast();
   
-  // Use the custom hook properly
   const { runCode, isRunning } = useCodeRunner({
     code,
     language,
     onOutputChange: setOutput,
   });
   
-  // Initial load effect
   useEffect(() => {
     const checkOllamaConnection = async () => {
       try {
@@ -77,7 +76,6 @@ const Index = () => {
     checkOllamaConnection();
   }, [toast]);
   
-  // Handle language change
   const handleLanguageChange = (value: string) => {
     setLanguage(value);
     if (value === 'python') {
@@ -92,57 +90,67 @@ const Index = () => {
       <Header onRunCode={runCode} />
       
       <div className="flex-1 flex overflow-hidden">
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <div className="flex items-center px-3 py-2 border-b border-border bg-muted/20">
-            <Select value={language} onValueChange={handleLanguageChange}>
-              <SelectTrigger className="w-[140px] h-8 text-sm bg-background">
-                <SelectValue placeholder="Select language" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="python">Python</SelectItem>
-                <SelectItem value="javascript">JavaScript</SelectItem>
-              </SelectContent>
-            </Select>
-            
-            <div className="ml-4 flex items-center">
-              {!connected && (
-                <div className="text-xs text-destructive flex items-center">
-                  <div className="h-2 w-2 mr-1 rounded-full bg-destructive"></div>
-                  Ollama/Mistral not detected
-                </div>
-              )}
+        <ResizablePanelGroup direction="horizontal" className="flex-1">
+          <ResizablePanel defaultSize={70} minSize={30} className="flex-1 flex flex-col overflow-hidden">
+            <div className="flex items-center px-3 py-2 border-b border-border bg-muted/20">
+              <Select value={language} onValueChange={handleLanguageChange}>
+                <SelectTrigger className="w-[140px] h-8 text-sm bg-background">
+                  <SelectValue placeholder="Select language" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="python">Python</SelectItem>
+                  <SelectItem value="javascript">JavaScript</SelectItem>
+                </SelectContent>
+              </Select>
               
-              {connected && (
-                <div className="text-xs text-muted-foreground flex items-center">
-                  <div className="h-2 w-2 mr-1 rounded-full bg-primary"></div>
-                  Connected to Mistral
-                </div>
-              )}
+              <div className="ml-4 flex items-center">
+                {!connected && (
+                  <div className="text-xs text-destructive flex items-center">
+                    <div className="h-2 w-2 mr-1 rounded-full bg-destructive"></div>
+                    Ollama/Mistral not detected
+                  </div>
+                )}
+                
+                {connected && (
+                  <div className="text-xs text-muted-foreground flex items-center">
+                    <div className="h-2 w-2 mr-1 rounded-full bg-primary"></div>
+                    Connected to Mistral
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+            
+            <div className="flex-1 overflow-hidden">
+              <ResizablePanelGroup
+                direction="vertical"
+                className="h-full"
+              >
+                <ResizablePanel defaultSize={70} className="h-full">
+                  <CodeEditor 
+                    code={code} 
+                    onChange={setCode} 
+                    language={language} 
+                  />
+                </ResizablePanel>
+                <ResizableHandle withHandle />
+                <ResizablePanel defaultSize={30} className="h-full">
+                  <Terminal 
+                    output={output} 
+                    isLoading={isRunning} 
+                  />
+                </ResizablePanel>
+              </ResizablePanelGroup>
+            </div>
+          </ResizablePanel>
           
-          <div className="flex-1 overflow-hidden">
-            <ResizablePanelGroup
-              direction="vertical"
-              className="h-full"
-            >
-              <ResizablePanel defaultSize={70} className="h-full">
-                <CodeEditor 
-                  code={code} 
-                  onChange={setCode} 
-                  language={language} 
-                />
-              </ResizablePanel>
-              <ResizableHandle withHandle />
-              <ResizablePanel defaultSize={30} className="h-full">
-                <Terminal 
-                  output={output} 
-                  isLoading={isRunning} 
-                />
-              </ResizablePanel>
-            </ResizablePanelGroup>
-          </div>
-        </div>
+          <ResizableHandle withHandle />
+          
+          <ResizablePanel defaultSize={30} minSize={20} className="border-l border-border">
+            <div className="h-full w-full overflow-hidden bg-card rounded-none">
+              <Chat />
+            </div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
       </div>
     </div>
   );
