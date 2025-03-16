@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Play, Settings } from 'lucide-react';
+import { Play, Settings, Save, Github, ChevronDown } from 'lucide-react';
 
 interface HeaderProps {
   onRunCode: () => void;
@@ -9,24 +9,31 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onRunCode }) => {
   return (
-    <header className="w-full px-6 py-3 flex items-center justify-between border-b border-border glass-effect animate-slide-down">
+    <header className="w-full h-12 px-4 flex items-center justify-between border-b border-border bg-card shadow-sm">
       <div className="flex items-center space-x-4">
-        <h1 className="text-xl font-medium">Local Mistral IDE</h1>
-        <div className="rounded-full h-2 w-2 bg-primary animate-pulse-subtle" />
+        <h1 className="text-lg font-medium">Local Mistral IDE</h1>
+        <div className="text-xs text-muted-foreground bg-muted/50 px-2 py-1 rounded-md">
+          main.py
+        </div>
       </div>
       
-      <div className="flex items-center space-x-3">
+      <div className="flex items-center space-x-2">
         <Button 
           onClick={onRunCode}
-          className="button-effect flex items-center gap-2" 
+          className="h-8 px-3 text-sm" 
           variant="default"
         >
-          <Play className="h-4 w-4" />
-          <span>Run</span>
+          <Play className="h-3.5 w-3.5 mr-1" />
+          Run
         </Button>
         
-        <Button variant="ghost" size="icon" className="button-effect">
-          <Settings className="h-5 w-5" />
+        <Button variant="outline" size="sm" className="h-8 px-3 text-sm">
+          <Save className="h-3.5 w-3.5 mr-1" />
+          Save
+        </Button>
+        
+        <Button variant="ghost" size="icon" className="h-8 w-8">
+          <Settings className="h-4 w-4" />
         </Button>
       </div>
     </header>

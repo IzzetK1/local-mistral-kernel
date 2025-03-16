@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from '@/components/ui/resizable';
 import { useToast } from '@/components/ui/use-toast';
@@ -89,78 +88,61 @@ const Index = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen w-full bg-background overflow-hidden animate-fade-in">
+    <div className="flex flex-col h-screen w-full bg-background overflow-hidden">
       <Header onRunCode={runCode} />
       
-      <div className="flex items-center space-x-4 px-6 py-3 border-b border-border">
-        <Select value={language} onValueChange={handleLanguageChange}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select language" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="python">Python</SelectItem>
-            <SelectItem value="javascript">JavaScript</SelectItem>
-          </SelectContent>
-        </Select>
-        
-        {!connected && (
-          <div className="text-sm text-destructive flex items-center">
-            <div className="h-2 w-2 mr-2 rounded-full bg-destructive"></div>
-            Ollama/Mistral not detected
-          </div>
-        )}
-        
-        {connected && (
-          <div className="text-sm text-muted-foreground flex items-center">
-            <div className="h-2 w-2 mr-2 rounded-full bg-primary"></div>
-            Connected to Mistral
-          </div>
-        )}
-      </div>
-      
-      <div className="flex-1 p-6 overflow-hidden">
-        <Tabs defaultValue="editor" className="h-full flex flex-col">
-          <TabsList className="mx-auto mb-6">
-            <TabsTrigger value="editor">Editor</TabsTrigger>
-            <TabsTrigger value="split">Split View</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="editor" className="flex-1 h-[calc(100%-3rem)]">
-            <div className="grid grid-rows-2 gap-6 h-full">
-              <CodeEditor 
-                code={code} 
-                onChange={setCode} 
-                language={language} 
-              />
-              <Terminal 
-                output={output} 
-                isLoading={isRunning} 
-              />
+      <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex items-center px-3 py-2 border-b border-border bg-muted/20">
+            <Select value={language} onValueChange={handleLanguageChange}>
+              <SelectTrigger className="w-[140px] h-8 text-sm bg-background">
+                <SelectValue placeholder="Select language" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="python">Python</SelectItem>
+                <SelectItem value="javascript">JavaScript</SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <div className="ml-4 flex items-center">
+              {!connected && (
+                <div className="text-xs text-destructive flex items-center">
+                  <div className="h-2 w-2 mr-1 rounded-full bg-destructive"></div>
+                  Ollama/Mistral not detected
+                </div>
+              )}
+              
+              {connected && (
+                <div className="text-xs text-muted-foreground flex items-center">
+                  <div className="h-2 w-2 mr-1 rounded-full bg-primary"></div>
+                  Connected to Mistral
+                </div>
+              )}
             </div>
-          </TabsContent>
+          </div>
           
-          <TabsContent value="split" className="flex-1 h-[calc(100%-3rem)]">
+          <div className="flex-1 overflow-hidden">
             <ResizablePanelGroup
-              direction="horizontal"
+              direction="vertical"
               className="h-full"
             >
-              <ResizablePanel className="h-full">
+              <ResizablePanel defaultSize={70} className="h-full">
                 <CodeEditor 
                   code={code} 
                   onChange={setCode} 
                   language={language} 
                 />
               </ResizablePanel>
-              <ResizableHandle />
-              <ResizablePanel className="h-full">
+              <ResizableHandle withHandle />
+              <ResizablePanel defaultSize={30} className="h-full">
                 <Terminal 
                   output={output} 
                   isLoading={isRunning} 
                 />
               </ResizablePanel>
             </ResizablePanelGroup>
-          </TabsContent>
-        </Tabs>
+          </div>
+        </div>
       </div>
     </div>
   );

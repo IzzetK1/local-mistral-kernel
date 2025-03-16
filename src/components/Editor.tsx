@@ -21,7 +21,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     
     // Add custom styles to the editor
     editor.updateOptions({
-      fontFamily: 'SF Mono, Menlo, Monaco, Courier New, monospace',
+      fontFamily: 'JetBrains Mono, SF Mono, Menlo, Monaco, Courier New, monospace',
       fontSize: 14,
       lineHeight: 1.5,
       minimap: {
@@ -37,17 +37,20 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
       cursorBlinking: 'phase',
       roundedSelection: true,
       renderLineHighlight: 'all',
+      lineNumbers: 'on',
+      glyphMargin: false,
+      folding: true,
+      scrollbar: {
+        vertical: 'auto',
+        horizontal: 'auto',
+        verticalScrollbarSize: 8,
+        horizontalScrollbarSize: 8,
+      }
     });
-    
-    // Animate editor content
-    const dom = editor.getDomNode();
-    if (dom) {
-      dom.classList.add('animate-fade-in');
-    }
   };
 
   return (
-    <div className="h-full w-full overflow-hidden rounded-md border border-border bg-card shadow-subtle">
+    <div className="h-full w-full overflow-hidden rounded-none border-0 bg-card shadow-none">
       <Editor
         height="100%"
         width="100%"
@@ -63,6 +66,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
           renderControlCharacters: true,
           contextmenu: true,
           smoothScrolling: true,
+          theme: 'vs-dark'
         }}
         className="p-0"
       />
