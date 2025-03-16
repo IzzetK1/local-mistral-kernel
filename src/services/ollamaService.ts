@@ -69,3 +69,39 @@ export async function getOllamaModels(): Promise<string[]> {
     return [];
   }
 }
+
+// Function to detect if Ollama is running and Mistral is available
+export async function isOllamaAvailable(): Promise<boolean> {
+  try {
+    const models = await getOllamaModels();
+    return models.includes('mistral');
+  } catch (error) {
+    console.error('Ollama is not available:', error);
+    return false;
+  }
+}
+
+// Function to detect code language from content
+export function detectLanguage(code: string): string {
+  // Simple heuristic for language detection
+  if (code.includes('def ') || code.includes('import ') && code.includes('print(')) {
+    return 'python';
+  } else if (code.includes('function ') || code.includes('const ') || code.includes('let ')) {
+    return 'javascript';
+  } else if (code.includes('public class ') || code.includes('private ') || code.includes('System.out.println')) {
+    return 'java';
+  } else if (code.includes('<?php')) {
+    return 'php';
+  } else if (code.includes('#include')) {
+    return 'c';
+  } else if (code.includes('using namespace') || code.includes('std::')) {
+    return 'cpp';
+  } else if (code.includes('fn main') || code.includes('let mut')) {
+    return 'rust';
+  } else if (code.includes('func ') && code.includes('fmt.')) {
+    return 'go';
+  }
+  
+  // Default to javascript if unable to detect
+  return 'javascript';
+}
